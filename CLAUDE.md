@@ -19,7 +19,7 @@ Three files, all logic in `game.js` (single script, global state, no modules):
 - `game.js` — game state lives in top-level `let` vars (`board`, `current`, `next`, `score`, `lines`, `level`, `paused`, `gameOver`, `dropInterval`, `animId`...), all reset in `init()`.
 
 Key mechanics:
-- Board is a 20×10 matrix of ints; 0 = empty, 1–7 = piece type indexing both `COLORS` and `PIECES` (piece shapes embed their own type number as cell value).
+- Board is a 20×10 matrix of ints; 0 = empty, 1–8 = piece type indexing both `COLORS` and `PIECES` (piece shapes embed their own type number as cell value). Type 8 is the hollow 3×3 ring "challenge" piece, spawned with probability `RING_CHANCE` in `randomPiece()`.
 - `requestAnimationFrame` `loop()` accumulates `dropAccum` and gravity-drops when it exceeds `dropInterval`; it also calls `draw()` each frame. Pause/game over `cancelAnimationFrame(animId)`; resume restarts `loop`.
 - Lock flow: `lockPiece()` → `merge()` → `clearLines()` (updates score/level/`dropInterval`) → `spawn()` (game over if new piece collides).
 - Rotation is clockwise-only with simple horizontal kicks `[0,-1,1,-2,2]` (not SRS). Pieces are picked with plain `Math.random` (no 7-bag).

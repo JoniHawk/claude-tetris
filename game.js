@@ -13,6 +13,7 @@ const COLORS = [
   '#e57373', // Z - red
   '#7986cb', // J - indigo
   '#ffb74d', // L - orange
+  '#d32f2f', // Anillo 3x3 hueco - rojo
 ];
 
 const PIECES = [
@@ -24,9 +25,11 @@ const PIECES = [
   [[5,5,0],[0,5,5],[0,0,0]],                  // Z
   [[6,0,0],[6,6,6],[0,0,0]],                  // J
   [[0,0,7],[7,7,7],[0,0,0]],                  // L
+  [[8,8,8],[8,0,8],[8,8,8]],                  // Anillo 3x3 hueco (reto)
 ];
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
+const RING_CHANCE = 0.08; // probabilidad de la pieza reto (~1 de cada 12)
 
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
@@ -47,7 +50,7 @@ function createBoard() {
 }
 
 function randomPiece() {
-  const type = Math.floor(Math.random() * 7) + 1;
+  const type = Math.random() < RING_CHANCE ? 8 : Math.floor(Math.random() * 7) + 1;
   const shape = PIECES[type].map(row => [...row]);
   return { type, shape, x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2), y: 0 };
 }
