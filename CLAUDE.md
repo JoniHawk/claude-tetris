@@ -24,4 +24,5 @@ Key mechanics:
 - Lock flow: `lockPiece()` → `merge()` → `clearLines()` (updates score/level/`dropInterval`) → `spawn()` (game over if new piece collides).
 - Rotation is clockwise-only with simple horizontal kicks `[0,-1,1,-2,2]` (not SRS). Pieces are picked with plain `Math.random` (no 7-bag).
 - Scoring: `LINE_SCORES[n] * level`, +1 per soft-drop cell, +2 per hard-drop cell; level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)`.
-- Input is a single `keydown` handler (arrows, X, Space, P); no key-repeat handling beyond the browser's.
+- Pause menu: `#pause-menu` (separate from game-over `#overlay`), opened by P or Esc via `togglePause()`. While open (`paused`), keydown only handles P/Esc and menu nav (↑↓ move `menuIndex`, Enter activates, ←→ change level on the select). `startLevel` (select 1–10) survives `init()`; `init()` sets `level = startLevel`, `dropInterval = levelInterval(level)`; clearLines uses `max(startLevel, floor(lines/10)+1)`. Resume resets `dropAccum`/`lastTime`.
+- Input is a single `keydown` handler (arrows, X, Space, P, Esc); no key-repeat handling beyond the browser's.
