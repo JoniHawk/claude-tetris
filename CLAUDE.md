@@ -22,6 +22,7 @@ Key mechanics:
 - Board is a 20×10 matrix of ints; 0 = empty, 1–8 = piece type indexing both `COLORS` and `PIECES` (piece shapes embed their own type number as cell value). Type 8 is the hollow 3×3 ring "challenge" piece, spawned with probability `RING_CHANCE` in `randomPiece()`.
 - `requestAnimationFrame` `loop()` accumulates `dropAccum` and gravity-drops when it exceeds `dropInterval`; it also calls `draw()` each frame. Pause/game over `cancelAnimationFrame(animId)`; resume restarts `loop`.
 - Lock flow: `lockPiece()` → `merge()` → `clearLines()` (updates score/level/`dropInterval`) → `spawn()` (game over if new piece collides).
+- Skins: `SKINS` object (`retro`, `neon`, `pastel`, `pixel`), each with `colors[9]`, `grid`/`boardBg` (null = use theme CSS vars) and `drawBlock`. Global `drawBlock` delegates to `SKINS[skinName]`; `COLORS` is reassigned by `applySkin()`. `<select id="skin-select">` persists to `localStorage` `tetris.skin` (try/catch); canvas background via CSS var `--canvas-bg`.
 - Rotation is clockwise-only with simple horizontal kicks `[0,-1,1,-2,2]` (not SRS). Pieces are picked with plain `Math.random` (no 7-bag).
 - Scoring: `LINE_SCORES[n] * level`, +1 per soft-drop cell, +2 per hard-drop cell; level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)`.
 - Input is a single `keydown` handler (arrows, X, Space, P); no key-repeat handling beyond the browser's.

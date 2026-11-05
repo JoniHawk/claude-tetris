@@ -17,6 +17,7 @@
   --title-color: #bb9af7;
   --title-glow: rgba(187, 154, 247, 0.4);
   --danger: #e57373;
+  --canvas-bg: var(--surface);
 }
 
 [data-theme="light"] {
@@ -82,7 +83,7 @@ body {
 #board {
   display: block;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--canvas-bg);
   border-radius: 4px;
   box-shadow: 0 0 40px var(--board-shadow);
 }
@@ -120,7 +121,7 @@ body {
 #next-canvas {
   display: block;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--canvas-bg);
   border-radius: 4px;
 }
 
@@ -166,6 +167,22 @@ kbd {
 #theme-toggle:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* ---- Selector de skin ---- */
+#skin-select {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#skin-select:hover {
+  border-color: var(--accent);
 }
 
 /* ---- Overlay ---- */
