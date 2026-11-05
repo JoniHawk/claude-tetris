@@ -50,7 +50,25 @@
         <div class="overlay-box">
           <p id="overlay-title">GAME OVER</p>
           <p id="overlay-score"></p>
-          <button id="restart-btn">Reiniciar</button>
+          <div id="new-record" class="hidden">
+            <p class="new-record-msg">¡Nuevo récord!</p>
+            <input id="name-input" type="text" maxlength="12" value="Jugador" autocomplete="off" aria-label="Nombre" />
+            <p class="hint">Enter para guardar</p>
+          </div>
+          <ol id="over-records" class="records"></ol>
+          <p id="over-stats" class="rec-stats"></p>
+          <button id="restart-btn" tabindex="-1">Reiniciar</button>
+          <button type="button" class="reset-records-btn" tabindex="-1">Resetear records</button>
+        </div>
+      </div>
+
+      <div id="start-screen" class="overlay start-screen hidden">
+        <div class="overlay-box">
+          <p class="start-title">RECORDS</p>
+          <ol id="start-records" class="records"></ol>
+          <p id="start-stats" class="rec-stats"></p>
+          <button id="start-btn" type="button" tabindex="-1">Jugar</button>
+          <button type="button" class="reset-records-btn" tabindex="-1">Resetear records</button>
         </div>
       </div>
     </div>
