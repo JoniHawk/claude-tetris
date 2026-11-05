@@ -14,7 +14,8 @@
   --grid: #22222e;
   --overlay-bg: rgba(10, 10, 20, 0.75);
   --board-shadow: rgba(0, 0, 0, 0.6);
-  --title-glow: rgba(122, 162, 247, 0.4);
+  --title-color: #bb9af7;
+  --title-glow: rgba(187, 154, 247, 0.4);
   --danger: #e57373;
 }
 
@@ -34,7 +35,8 @@
   --grid: #e1e3ec;
   --overlay-bg: rgba(242, 243, 247, 0.78);
   --board-shadow: rgba(30, 34, 60, 0.18);
-  --title-glow: rgba(59, 91, 219, 0.25);
+  --title-color: #7048e8;
+  --title-glow: rgba(112, 72, 232, 0.25);
   --danger: #d32f2f;
 }
 
@@ -65,7 +67,7 @@ body {
   font-weight: 800;
   letter-spacing: 8px;
   padding-left: 8px; /* compensa el letter-spacing final para centrar */
-  color: var(--accent);
+  color: var(--title-color);
   text-shadow: 0 0 18px var(--title-glow);
   margin-bottom: 18px;
 }
