@@ -14,7 +14,7 @@ Open `index.html` directly, or serve statically: `python3 -m http.server 8000` �
 
 Three files, all logic in `game.js` (single script, global state, no modules):
 
-- `index.html` — fixed DOM ids that `game.js` looks up at load (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`). Renaming ids breaks the game.
+- `index.html` — fixed DOM ids that `game.js` looks up at load (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-toggle`, `pause-menu`, `resume-btn`, `pause-restart-btn`, `controls-btn`, `menu-controls`, `start-level`). Renaming ids breaks the game.
 - `style.css` — layout/theme; overlay shown/hidden via `.hidden` class.
 - `game.js` — game state lives in top-level `let` vars (`board`, `current`, `next`, `score`, `lines`, `level`, `paused`, `gameOver`, `dropInterval`, `animId`...), all reset in `init()`.
 
@@ -24,4 +24,5 @@ Key mechanics:
 - Lock flow: `lockPiece()` → `merge()` → `clearLines()` (updates score/level/`dropInterval`) → `spawn()` (game over if new piece collides).
 - Rotation is clockwise-only with simple horizontal kicks `[0,-1,1,-2,2]` (not SRS). Pieces are picked with plain `Math.random` (no 7-bag).
 - Scoring: `LINE_SCORES[n] * level`, +1 per soft-drop cell, +2 per hard-drop cell; level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)`.
-- Input is a single `keydown` handler (arrows, X, Space, P); no key-repeat handling beyond the browser's.
+- Pause menu: `#pause-menu` (separate from game-over `#overlay`), opened by P or Esc via `togglePause()`. While open (`paused`), keydown only handles P/Esc and menu nav (↑↓ move `menuIndex`, Enter activates, ←→ change level on the select). `startLevel` (select 1–10) survives `init()`; `init()` captures `baseLevel = startLevel` and sets `level = baseLevel`, `dropInterval = levelInterval(level)`; clearLines uses `max(baseLevel, floor(lines/10)+1)`. Resume resets `dropAccum`/`lastTime`.
+- Input is a single `keydown` handler (arrows, X, Space, P, Esc); no key-repeat handling beyond the browser's.
