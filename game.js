@@ -53,6 +53,7 @@ const menuItems = [resumeBtn, pauseRestartBtn, controlsBtn, startLevelSel];
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 let startLevel = 1; // nivel inicial de la próxima partida (persiste entre init())
+let baseLevel = 1; // nivel inicial de la partida en curso (capturado en init())
 let menuIndex = 0;
 let theme = 'dark';
 let gridColor = '#22222e';
@@ -125,7 +126,7 @@ function clearLines() {
   if (cleared) {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
-    level = Math.max(startLevel, Math.floor(lines / 10) + 1);
+    level = Math.max(baseLevel, Math.floor(lines / 10) + 1);
     dropInterval = levelInterval(level);
     updateHUD();
   }
@@ -248,6 +249,7 @@ function endGame() {
 function setMenuIndex(i) {
   menuIndex = (i + menuItems.length) % menuItems.length;
   menuItems.forEach((el, n) => el.classList.toggle('selected', n === menuIndex));
+  startLevelSel.parentElement.classList.toggle('selected', menuIndex === 3);
 }
 
 function togglePause() {
@@ -257,6 +259,7 @@ function togglePause() {
     pauseMenu.classList.add('hidden');
     dropAccum = 0;
     lastTime = performance.now();
+    cancelAnimationFrame(animId);
     animId = requestAnimationFrame(loop);
   } else {
     cancelAnimationFrame(animId);
@@ -296,7 +299,8 @@ function init() {
   board = createBoard();
   score = 0;
   lines = 0;
-  level = startLevel;
+  baseLevel = startLevel;
+  level = baseLevel;
   paused = false;
   gameOver = false;
   dropInterval = levelInterval(level);
@@ -312,7 +316,7 @@ function init() {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') { if (!e.repeat) togglePause(); return; }
   if (paused && !gameOver) {
     // menú de pausa abierto: solo navegación del menú
     const el = menuItems[menuIndex];
@@ -368,6 +372,8 @@ menuItems.forEach((el, n) => {
     el.blur(); // evita que Espacio active el botón
   });
 });
+
+startLevelSel.parentElement.addEventListener('click', () => setMenuIndex(3));
 
 startLevelSel.addEventListener('change', () => {
   startLevel = parseInt(startLevelSel.value, 10) || 1;

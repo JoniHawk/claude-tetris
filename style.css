@@ -232,8 +232,8 @@ kbd {
   font-size: 13px; font-weight: 700; letter-spacing: 1px; cursor: pointer;
   transition: border-color 0.15s, color 0.15s;
 }
-.menu-btn:hover, .menu-btn.selected, .menu-level:has(.selected) { border-color: var(--accent); color: var(--accent); }
-.menu-btn.selected, .menu-level:has(.selected) { box-shadow: 0 0 0 2px var(--accent); }
+.menu-btn:hover, .menu-btn.selected, .menu-level.selected { border-color: var(--accent); color: var(--accent); }
+.menu-btn.selected, .menu-level.selected { box-shadow: 0 0 0 2px var(--accent); }
 .menu-level { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .menu-level select {
   background: var(--kbd-bg); color: var(--text); border: 1px solid var(--kbd-border);
