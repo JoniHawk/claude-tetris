@@ -14,7 +14,7 @@ Open `index.html` directly, or serve statically: `python3 -m http.server 8000` �
 
 Three files, all logic in `game.js` (single script, global state, no modules):
 
-- `index.html` — fixed DOM ids that `game.js` looks up at load (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`). Renaming ids breaks the game.
+- `index.html` — fixed DOM ids that `game.js` looks up at load (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `pause-menu`, `controls-view`, `resume-btn`, `pause-restart-btn`, `controls-btn`, `controls-back-btn`, `level-down`, `level-up`, `start-level`). Renaming ids breaks the game.
 - `style.css` — layout/theme; overlay shown/hidden via `.hidden` class.
 - `game.js` — game state lives in top-level `let` vars (`board`, `current`, `next`, `score`, `lines`, `level`, `paused`, `gameOver`, `dropInterval`, `animId`...), all reset in `init()`.
 
@@ -23,5 +23,5 @@ Key mechanics:
 - `requestAnimationFrame` `loop()` accumulates `dropAccum` and gravity-drops when it exceeds `dropInterval`; it also calls `draw()` each frame. Pause/game over `cancelAnimationFrame(animId)`; resume restarts `loop`.
 - Lock flow: `lockPiece()` → `merge()` → `clearLines()` (updates score/level/`dropInterval`) → `spawn()` (game over if new piece collides).
 - Rotation is clockwise-only with simple horizontal kicks `[0,-1,1,-2,2]` (not SRS). Pieces are picked with plain `Math.random` (no 7-bag).
-- Scoring: `LINE_SCORES[n] * level`, +1 per soft-drop cell, +2 per hard-drop cell; level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)`.
-- Input is a single `keydown` handler (arrows, X, Space, P); no key-repeat handling beyond the browser's.
+- Scoring: `LINE_SCORES[n] * level`, +1 per soft-drop cell, +2 per hard-drop cell; level = `startLevel + floor(lines/10)`; `dropInterval = calcDropInterval(level) = max(100, 1000 - (level-1)*90)`. `startLevel` (1–10, top-level var chosen in the pause menu) persists across restarts and is applied in `init()`.
+- Input is a single `keydown` handler (arrows, X, Space, P/Escape); P/Escape toggles the pause menu (inside `#overlay`) and all game keys are ignored while `paused`; no key-repeat handling beyond the browser's.
