@@ -91,6 +91,11 @@ jobs:
                ## Propuesta de solución (pasos concretos)
                ## Riesgos y casos borde
                ## Preguntas abiertas
+               El comentario debe estar en formato GitHub Flavored Markdown (GFM) válido, para que
+               GitHub lo renderice correctamente: encabezados con `##`, listas con `-`, código en
+               bloques con triple backtick y lenguaje (```js), nombres de archivo/funciones en
+               `código inline`, y referencias a código como `archivo:línea`. No uses HTML salvo el
+               comentario inicial. Asegúrate de cerrar todos los bloques de código.
                Guarda el texto en un archivo temporal (ej. triage.md).
 
             4. Publica UN solo comentario: busca con
