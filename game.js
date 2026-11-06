@@ -4,7 +4,7 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK = 30;
 
-const COLORS = [
+const RETRO_COLORS = [
   null,
   '#4dd0e1', // I - cyan
   '#ffd54f', // O - yellow
@@ -28,6 +28,77 @@ const PIECES = [
   [[8,8,8],[8,0,8],[8,8,8]],                  // Anillo 3x3 hueco (reto)
 ];
 
+const SKINS = {
+  retro: {
+    colors: RETRO_COLORS,
+    draw(context, px, py, size, color) {
+      context.fillStyle = color;
+      context.fillRect(px + 1, py + 1, size - 2, size - 2);
+      context.fillStyle = 'rgba(255,255,255,0.12)';
+      context.fillRect(px + 1, py + 1, size - 2, 4);
+    },
+  },
+  neon: {
+    colors: [null, '#00f0ff', '#fff700', '#d500ff', '#39ff14', '#ff1744', '#2979ff', '#ff9100', '#ff0055'],
+    draw(context, px, py, size, color) {
+      context.save();
+      context.shadowColor = color;
+      context.shadowBlur = 12;
+      context.fillStyle = '#000';
+      context.fillRect(px + 3, py + 3, size - 6, size - 6);
+      context.strokeStyle = color;
+      context.lineWidth = 2;
+      context.strokeRect(px + 3, py + 3, size - 6, size - 6);
+      context.restore();
+      context.save();
+      context.globalAlpha *= 0.35;
+      context.fillStyle = color;
+      context.fillRect(px + 6, py + 6, size - 12, size - 12);
+      context.restore();
+    },
+  },
+  pastel: {
+    colors: [null, '#a8e6ef', '#fff1b8', '#d7b8f0', '#b9e8c0', '#f7b9b9', '#bcd7f7', '#fbd3a6', '#f08fa0'],
+    draw(context, px, py, size, color) {
+      const rad = size * 0.3;
+      context.fillStyle = color;
+      context.beginPath();
+      context.moveTo(px + 2 + rad, py + 2);
+      context.arcTo(px + size - 2, py + 2, px + size - 2, py + size - 2, rad);
+      context.arcTo(px + size - 2, py + size - 2, px + 2, py + size - 2, rad);
+      context.arcTo(px + 2, py + size - 2, px + 2, py + 2, rad);
+      context.arcTo(px + 2, py + 2, px + size - 2, py + 2, rad);
+      context.closePath();
+      context.fill();
+      context.fillStyle = 'rgba(255,255,255,0.45)';
+      context.beginPath();
+      context.arc(px + size * 0.32, py + size * 0.32, size * 0.1, 0, Math.PI * 2);
+      context.fill();
+    },
+  },
+  pixel: {
+    colors: [null, '#29b6f6', '#fdd835', '#ab47bc', '#43a047', '#e53935', '#3949ab', '#fb8c00', '#8d1c1c'],
+    draw(context, px, py, size, color) {
+      const u = size / 6; // "pixel" de la textura
+      context.fillStyle = color;
+      context.fillRect(px, py, size, size);
+      context.fillStyle = 'rgba(255,255,255,0.18)';
+      for (let i = 1; i < 5; i++)
+        for (let j = 1; j < 5; j++)
+          if ((i + j) % 2 === 0) context.fillRect(px + i * u, py + j * u, u, u);
+      context.fillStyle = 'rgba(255,255,255,0.5)';
+      context.fillRect(px, py, size, u);
+      context.fillRect(px, py, u, size);
+      context.fillStyle = 'rgba(0,0,0,0.4)';
+      context.fillRect(px, py + size - u, size, u);
+      context.fillRect(px + size - u, py, u, size);
+    },
+  },
+};
+const SKIN_KEY = 'tetris-skin';
+let skin = 'retro';
+let COLORS = SKINS.retro.colors;
+
 const LINE_SCORES = [0, 100, 300, 500, 800];
 const RING_CHANCE = 0.08; // probabilidad de la pieza reto (~1 de cada 12)
 
@@ -43,6 +114,7 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeBtn = document.getElementById('theme-toggle');
+const skinSelect = document.getElementById('skin-select');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 let theme = 'dark';
@@ -164,13 +236,8 @@ function updateHUD() {
 
 function drawBlock(context, x, y, colorIndex, size, alpha) {
   if (!colorIndex) return;
-  const color = COLORS[colorIndex];
   context.globalAlpha = alpha ?? 1;
-  context.fillStyle = color;
-  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-  // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
-  context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  SKINS[skin].draw(context, x * size, y * size, size, COLORS[colorIndex]);
   context.globalAlpha = 1;
 }
 
@@ -307,10 +374,30 @@ document.addEventListener('keydown', e => {
 
 restartBtn.addEventListener('click', init);
 
+function refreshGridColor() {
+  gridColor = getComputedStyle(document.documentElement).getPropertyValue('--grid').trim();
+}
+
+function applySkin(name) {
+  if (!SKINS[name]) name = 'retro';
+  skin = name;
+  COLORS = SKINS[name].colors;
+  document.documentElement.dataset.skin = name;
+  skinSelect.value = name;
+  refreshGridColor();
+  if (current) { draw(); drawNext(); } // repinta tambien en pausa / game over
+}
+
+skinSelect.addEventListener('change', () => {
+  applySkin(skinSelect.value);
+  try { localStorage.setItem(SKIN_KEY, skin); } catch (e) {}
+  skinSelect.blur(); // devuelve el foco al juego
+});
+
 function applyTheme(t) {
   theme = t;
   document.documentElement.dataset.theme = t;
-  gridColor = getComputedStyle(document.documentElement).getPropertyValue('--grid').trim();
+  refreshGridColor();
   const light = t === 'light';
   themeBtn.textContent = light ? 'Modo oscuro' : 'Modo claro';
   themeBtn.setAttribute('aria-pressed', String(light));
@@ -323,5 +410,9 @@ themeBtn.addEventListener('click', () => {
 });
 
 applyTheme('dark');
+
+let savedSkin = 'retro';
+try { savedSkin = localStorage.getItem(SKIN_KEY) || 'retro'; } catch (e) {}
+applySkin(savedSkin);
 
 init();
