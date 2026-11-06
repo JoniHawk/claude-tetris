@@ -99,7 +99,7 @@ Define la estructura visual:
 - Un título visible `<h1 class="title">TETRIS</h1>` sobre el tablero.
 - Un `<canvas id="board">` de **300 × 600** píxeles donde se renderiza el tablero.
 - Un panel lateral con `SCORE`, `LINES`, `LEVEL`, vista de la siguiente pieza y la lista de controles.
-- Un overlay para los estados **PAUSA** y **GAME OVER**.
+- Un overlay para los estados **INICIO**, **PAUSA** y **GAME OVER**, con la tabla de records (top 5), formulario de nombre (`name-form`, `name-input`), mejor combo / líneas máx y botón `reset-records-btn`.
 
 ### 2. `style.css`
 
@@ -185,3 +185,7 @@ Algunos parámetros fáciles de tunear en `game.js`:
 ## Licencia
 
 Proyecto de uso libre con fines educativos y de práctica.
+
+## Tabla de records
+
+Se guarda en `localStorage` (clave `tetris-records`, siempre dentro de `try/catch`): top 5 con nombre, mejor combo (piezas seguidas que limpian líneas) y máximo de líneas en una partida. Se muestra en la pantalla de inicio, pausa y game over; al entrar en el top se resalta la fila y se pide el nombre. El botón "Resetear records" la borra.
